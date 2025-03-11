@@ -3,9 +3,7 @@ import agent from "../api/agent";
 import { useLocation } from "react-router";
 
 export const useActivities = (id?: string) => {
-
     const queryClient = useQueryClient();
-
     const location = useLocation();
 
     const { data: activities, isPending } = useQuery({
@@ -20,8 +18,8 @@ export const useActivities = (id?: string) => {
     const {data: activity, isLoading: isLoadingActivity} = useQuery({
         queryKey: ['activities', id],
         queryFn: async () => {
-            const response = await agent.get<Activity>(`activities/${id}`)
-            return response.data
+            const response = await agent.get<Activity>(`/activities/${id}`);
+            return response.data;
         },
         enabled: !!id
     })
@@ -39,7 +37,7 @@ export const useActivities = (id?: string) => {
 
     const createActivity = useMutation({
         mutationFn: async (activity: Activity) => {
-            const response = await agent.post('/activities', activity)
+            const response = await agent.post('/activities', activity);
             return response.data;
         },
         onSuccess: async () => {
@@ -47,7 +45,7 @@ export const useActivities = (id?: string) => {
                 queryKey: ['activities']
             })
         }
-    })
+    });
 
     const deleteActivity = useMutation({
         mutationFn: async (id: string) => {
@@ -58,17 +56,16 @@ export const useActivities = (id?: string) => {
                 queryKey: ['activities']
             })
         }
-    })
+    });
 
-    
-
-      return {
-        activities, 
+    return {
+        activities,
         isPending,
         updateActivity,
         createActivity,
         deleteActivity,
         activity,
         isLoadingActivity
-      }
+    }
+
 }
