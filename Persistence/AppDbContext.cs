@@ -13,4 +13,22 @@ public class AppDbContext(DbContextOptions options): IdentityDbContext<User>(opt
 {
     //DbSet represents a row in the database where each row corresponds to an Activity entity (object) from the Domain namespace
     public required DbSet<Domain.Activity> Activities { get; set; }
+
+    public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+        builder.Entity<ActivityAttendee>(x => x.HasKey(a => new {a.ActivityId, a.UserId}));
+
+        builder.Entity<ActivityAttendee>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.Activities)
+            .HasForeignKey(x => x.UserId);
+
+        builder.Entity<ActivityAttendee>()
+        .HasOne(x => x.Activity)
+        .WithMany(x => x.Attendees)
+        .HasForeignKey(x => x.ActivityId);
+    }
 }
